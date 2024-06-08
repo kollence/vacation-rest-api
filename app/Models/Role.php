@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Role extends Model
+{
+    use HasFactory;
+
+    const ADMIN_NAME = 'admin';
+    const MANAGER_NAME = 'manager';
+    const USER_NAME = 'user';
+
+    protected $fillable = [
+        'name',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'role_user', 'role_id', 'user_id');
+    }
+}
