@@ -15,10 +15,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
         return $request->user();
     });
     Route::get('/teams', [TeamsController::class, 'index']);
-    Route::get('/teams/{id}', [TeamsController::class, 'show']);
+    Route::get('/teams/{team}', [TeamsController::class, 'show']);
     Route::post('/teams', [TeamsController::class, 'store']);
-    Route::put('/teams/{id}', [TeamsController::class, 'update']);
-    Route::delete('/teams/{id}', [TeamsController::class, 'destroy']);
+    Route::put('/teams/{team}', [TeamsController::class, 'update']);
+    Route::delete('/teams/{team}', [TeamsController::class, 'destroy']);
     // Auth logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });

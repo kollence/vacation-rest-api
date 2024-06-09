@@ -17,10 +17,10 @@ class TeamsController extends Controller
      */
     public function index()
     {
-        $teams = Team::all(); // Eager load users for each team
+        $teams = Team::with('users')->get();
 
         return response()->json([
-            'teams' => new TeamCollection($teams->load('users')),
+            'teams' => new TeamCollection($teams),
         ], 200);
     }
 
@@ -64,7 +64,10 @@ class TeamsController extends Controller
      */
     public function show(Team $team)
     {
-        //
+        // dd($team);
+        return response()->json([
+            'team' => new TeamResource($team->load('users')),
+        ], 200);
     }
 
     /**
