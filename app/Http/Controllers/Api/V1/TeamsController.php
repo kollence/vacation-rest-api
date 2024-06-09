@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateTeamRequest;
 use App\Http\Resources\TeamCollection;
 use App\Http\Resources\TeamResource;
 use App\Models\Team;
@@ -54,8 +55,7 @@ class TeamsController extends Controller
         }
     
         return response()->json([
-            'message' => 'Team created successfully',
-            'team' => $team,
+            'team' =>  new TeamResource($team->load('users')),
         ], 201);
     }
 
@@ -73,9 +73,37 @@ class TeamsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Team $team)
+    public function update(UpdateTeamRequest $request, Team $team)
     {
-        //
+
+        $data = $request->validated();
+        $user_ids = $data['user_ids'];
+
+        $team->update($data);
+
+        if (isset($user_ids)) {
+            $current_users = $team->users; // Get currently associated users
+
+            foreach ($current_users as $user) {
+                if (!in_array($user->id, $user_ids)) {
+                    $user->team_id = null;
+                    $user->save();
+                }
+            }
+            
+            foreach ($user_ids as $user_id) {
+                $user = User::find($user_id);
+                if ($user && $user->team_id !== $team->id) {
+                    $user->team_id = $team->id;
+                    $user->save();
+                }
+            }
+        }
+        
+    
+        return response()->json([
+            'team' => new TeamResource($team->load('users')),
+        ], 200);
     }
 
     /**
