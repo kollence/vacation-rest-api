@@ -32,7 +32,7 @@ class TeamsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'manager_id' => 'required|exists:users,id',
-            'user_ids' => 'required|array|min:1|distinct', // Ensure at least one unique user ID
+            'user_ids' => 'array|distinct', // Ensure at least one unique user ID
             'user_ids.*' => 'exists:users,id', // Validate each user ID exists
         ]);
 
