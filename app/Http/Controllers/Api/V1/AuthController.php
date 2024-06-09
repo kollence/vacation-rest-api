@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterUserRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\ApiUserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -40,7 +40,7 @@ class AuthController extends Controller
     
             return response()->json([
                 'message' => 'User created successfully',
-                'user' => new UserResource($user),
+                'user' => new ApiUserResource($user),
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -73,7 +73,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'Login successful',
-                'user' => new UserResource($user->load('roles')),
+                'user' => new ApiUserResource($user),
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
