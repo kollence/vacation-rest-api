@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,10 +15,34 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+        $roles = ['user', 'manager', 'admin'];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        foreach ($roles as $role) {
+            Role::create(['name' => $role]);
+        }
+
+        $user = User::factory()->create([
+            'name' => 'User',
+            'email' => 'user@mail.com',
         ]);
+        $roleId = Role::where('name', $roles[0])->first()->id;
+        $user->roles()->attach($roleId);
+        $user->createToken('user-token')->plainTextToken;
+
+        $manager = User::factory()->create([
+            'name' => 'Manager',
+            'email' => 'manager@mail.com',
+        ]);
+        $roleId = Role::where('name', $roles[1])->first()->id;
+        $manager->roles()->attach($roleId);
+        $manager->createToken('manager-token')->plainTextToken;
+
+        $admin = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@mail.com',
+        ]);
+        $roleId = Role::where('name', $roles[2])->first()->id;
+        $admin->roles()->attach($roleId);
+        $admin->createToken('admin-token')->plainTextToken;
     }
 }
