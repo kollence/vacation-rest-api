@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\TeamsController;
+use App\Http\Controllers\Api\V1\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
     });
    // Teams
     Route::apiResource('teams', TeamsController::class);
+    Route::apiResource('users', UsersController::class);
     // Route::get('/teams', [TeamsController::class, 'index']);
     // Route::get('/teams/{team}', [TeamsController::class, 'show']);
     // Route::post('/teams', [TeamsController::class, 'store']);
