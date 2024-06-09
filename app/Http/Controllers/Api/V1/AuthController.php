@@ -12,14 +12,13 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     public function register(RegisterUserRequest $request)
-    {
+    {   
+        $initialUser = 'user';
         try{
-
-            $rolesExist = Role::exists();
-            
-            if (!$rolesExist) {
+            // if user role doesn't exist
+            if (!Role::exists($initialUser)) {
                 $defaultRole = Role::create([
-                    'name' => 'user',
+                    'name' => $initialUser,
                 ]);
             }
             $user = User::create($request->only('name', 'email', 'password'));
@@ -27,10 +26,11 @@ class AuthController extends Controller
             if (isset($defaultRole)) {
                 $user->roles()->attach($defaultRole);
             }else{
-                $user->roles()->attach([1]);
+                $roleId = Role::where('name', $initialUser)->first()->id;
+                $user->roles()->attach($roleId);
             }
-            // // return $user->load('roles');
-            $token = $user->createToken('user-token',['none'])->plainTextToken;
+            $token = $user->createToken('user-token')->plainTextToken;
+            
             $user->token = $token;
             return new UserResource($user->load('roles'));
         }catch(\Exception $e){
