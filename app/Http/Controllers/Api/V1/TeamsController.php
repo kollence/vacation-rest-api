@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TeamCollection;
+use App\Http\Resources\TeamResource;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,10 +17,10 @@ class TeamsController extends Controller
      */
     public function index()
     {
-        $teams = Team::with('users')->get(); // Eager load users for each team
+        $teams = Team::all(); // Eager load users for each team
 
         return response()->json([
-            'teams' => $teams,
+            'teams' => new TeamCollection($teams->load('users')),
         ], 200);
     }
 
