@@ -3,16 +3,23 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateTeamResource;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Http\Resources\TeamCollection;
 use App\Http\Resources\TeamResource;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TeamsController extends Controller
 {
+    /** 
+     * JUST FOR ADMIN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * 
+     * 
+     */
     /**
      * Display a listing of the resource.
      */
@@ -28,35 +35,26 @@ class TeamsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateTeamResource $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'manager_id' => 'required|exists:users,id',
-            'user_ids' => 'array|distinct', // Ensure at least one unique user ID
-            'user_ids.*' => 'exists:users,id', // Validate each user ID exists
-        ]);
+        $team = DB::transaction(function () use ($request) {
+            $team = Team::create([
+                'name' => $request['name'],
+                'manager_id' => $request['manager_id'],
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $data = $validator->validated();
-
-        $team = Team::create([
-            'name' => $data['name'],
-            'manager_id' => $data['manager_id'],
-        ]);
-    
-        foreach ($data['user_ids'] as $userId) {
-            $user = User::find($userId);
-            $user->team_id = $team->id;
-            $user->save();
-        }
-    
+            $user_ids = $request['user_ids'];
+            if (isset($user_ids)) {
+                User::whereIn('id', $user_ids)->update(['team_id' => $team->id]);
+            }
+            return $team;
+            
+        });
+        
         return response()->json([
-            'team' =>  new TeamResource($team->load('users')),
+                'team' =>  new TeamResource($team->load('users')),
         ], 201);
+
     }
 
     /**
@@ -64,7 +62,6 @@ class TeamsController extends Controller
      */
     public function show(Team $team)
     {
-        // dd($team);
         return response()->json([
             'team' => new TeamResource($team->load('users')),
         ], 200);
@@ -77,28 +74,13 @@ class TeamsController extends Controller
     {
 
         $data = $request->validated();
-        $user_ids = $data['user_ids'];
+        DB::transaction(function () use ($team, $data) {
+            $team->update($data);
 
-        $team->update($data);
-
-        if (isset($user_ids)) {
-            $current_users = $team->users; // Get currently associated users
-
-            foreach ($current_users as $user) {
-                if (!in_array($user->id, $user_ids)) {
-                    $user->team_id = null;
-                    $user->save();
-                }
+            if (isset($data['user_ids'])) {
+                User::whereIn('id', $data['user_ids'])->update(['team_id' => $team->id]);
             }
-            
-            foreach ($user_ids as $user_id) {
-                $user = User::find($user_id);
-                if ($user && $user->team_id !== $team->id) {
-                    $user->team_id = $team->id;
-                    $user->save();
-                }
-            }
-        }
+        });
         
     
         return response()->json([
@@ -111,6 +93,39 @@ class TeamsController extends Controller
      */
     public function destroy(Team $team)
     {
-        //
+        DB::transaction(function () use ($team) {
+            $team->users()->update(['team_id' => null]);
+            $team->delete();
+        });
+    
+        return response()->json([
+            'message' => 'Team deleted successfully',
+        ], 200);
+    }
+
+    public function removeTeamUser(Request $request, Team $team)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_ids' => 'array|distinct', // Ensure at least one unique user ID
+            'user_ids.*' => 'exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+        if(isset($request['user_ids']) && count($request['user_ids']) > 0){
+            $team->users()->whereIn('id', $request['user_ids'])->update(['team_id' => null]);
+            return response()->json([
+                'message' => 'Team users successfully deleted',
+            ], 200);
+
+        }else{
+            return response()->json([
+                'message' => 'Team users are not selected',
+            ], 200);
+        }
     }
 }
