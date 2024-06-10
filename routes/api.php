@@ -15,14 +15,11 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-   // Teams
+    // Teams
+    Route::post('/teams/remove-team-user/{team}', [TeamsController::class, 'removeTeamUser']);
     Route::apiResource('teams', TeamsController::class);
+
     Route::apiResource('users', UsersController::class);
-    // Route::get('/teams', [TeamsController::class, 'index']);
-    // Route::get('/teams/{team}', [TeamsController::class, 'show']);
-    // Route::post('/teams', [TeamsController::class, 'store']);
-    // Route::put('/teams/{team}', [TeamsController::class, 'update']);
-    // Route::delete('/teams/{team}', [TeamsController::class, 'destroy']);
     // Auth logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });
