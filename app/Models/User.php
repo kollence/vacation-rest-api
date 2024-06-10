@@ -55,4 +55,29 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
+
+    public function vacationRequest()
+    {
+        return $this->hasMany(VacationRequest::class);
+    }
+
+    public function managedRequest()
+    {
+        return $this->hasMany(VacationRequest::class, 'approver_by');
+    }
+
+    public function isAdmin()
+    {
+        return $this->roles()->where('name', 'admin')->exists();
+    }
+
+    public function isManager()
+    {
+        return $this->roles()->where('name', 'manager')->exists();
+    }
+
+    public function isUser()
+    {
+        return $this->roles()->where('name', 'user')->exists();
+    }
 }
