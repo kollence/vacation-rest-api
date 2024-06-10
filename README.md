@@ -59,6 +59,7 @@
             "password_confirmation": "123123123",
             "role_id": [2]
         }
+5. Brise korisnika DELETE /api/v1/users/{user} automatski se brise i role_user red gde je korisnik pripadao
 
 
 
