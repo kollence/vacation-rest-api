@@ -37,15 +37,15 @@
 
 2. Prikaz korisnika GET /api/v1/users/{user}
 
-3. Kreira korisnika POST /api/v1/users Obavezno ime i prezime, neobavezno email, password, timovi (naknadno se mogu dodavati, menjati, brisati)
+3. Kreira korisnika POST /api/v1/users Obavezno ime, mail, password, password confirmation (role se naknadno mogu dodavati, menjati, brisati, DEFAULT je user)
     Request JSON
-        {
-            "name": "Ime Prezime",
-            "email": "ime.prezime@gmail.com",
-            "password": "123456",
-            "team_id": null,
-        }
-
+    {
+        "name": "Bora",
+        "email": "bora@create.com",
+        "password": "123123123",
+        "password_confirmation": "123123123"
+    }
+4. 
 
 
 
