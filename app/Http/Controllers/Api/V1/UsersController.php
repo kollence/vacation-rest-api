@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+
+    public function __construct(
+        protected UserService $userService
+    ){}
     /**
      * Display a listing of the resource.
      */
@@ -17,16 +23,20 @@ class UsersController extends Controller
     {
         $users = User::all();
         return response()->json([
-            'user' => new UserCollection($users->load('roles')),
+            'users' => new UserCollection($users->load('roles')),
         ], 201);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RegisterUserRequest $request)
     {
-        //
+        $user = $this->userService->create($request->toArray());
+
+        return response()->json([
+            'user' => new UserResource($user->load('roles')),
+        ], 201);
     }
 
     /**
