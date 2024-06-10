@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TeamsController extends Controller
 {
-    /** 
-     * JUST FOR ADMIN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * 
-     * 
-     */
     /**
      * Display a listing of the resource.
      */
@@ -75,11 +70,12 @@ class TeamsController extends Controller
 
         $data = $request->validated();
         DB::transaction(function () use ($team, $data) {
-            $team->update($data);
-
-            if (isset($data['user_ids'])) {
+            
+            if (isset($data['user_ids']) && count($data['user_ids']) > 0) {
                 User::whereIn('id', $data['user_ids'])->update(['team_id' => $team->id]);
             }
+
+            $team->update($data);
         });
         
     
