@@ -54,7 +54,11 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $updated = $this->userService->update($user, $request->toArray());
+
+        return response()->json([
+            'user' => new UserResource($updated->load('roles')),
+        ], 201);
     }
 
     /**
