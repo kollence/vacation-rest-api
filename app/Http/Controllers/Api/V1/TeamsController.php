@@ -113,14 +113,14 @@ class TeamsController extends Controller
             ], 400);
         }
         if(isset($request['user_ids']) && count($request['user_ids']) > 0){
-            $team->users()->whereIn('id', $request['user_ids'])->update(['team_id' => null]);
+            User::whereIn('id', $request['user_ids'])->update(['team_id' => null]);
             return response()->json([
                 'message' => 'Team users successfully deleted',
             ], 200);
 
         }else{
             return response()->json([
-                'message' => 'Team users are not selected',
+                'message' => 'Team user(s) are not selected',
             ], 200);
         }
     }
