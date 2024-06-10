@@ -45,7 +45,20 @@
         "password": "123123123",
         "password_confirmation": "123123123"
     }
-4. 
+4. Abdejtovanje korisnika PUT/PATCH /api/v1/users/{user} Role se mogu naknadno dodavati i menjati
+   (zahteva jednostavniji pristup, bice zakucano na posedovanje samo jedne role)
+   Za PATCH 
+        {
+            "name": "Novi korisnik PATCH"
+        }
+   Za PUT
+        {
+            "name": "Novi korisnik PUT",
+            "email": "boza3@create.com",
+            "password": "123123123",
+            "password_confirmation": "123123123",
+            "role_id": [2]
+        }
 
 
 
