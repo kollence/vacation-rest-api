@@ -45,4 +45,14 @@ class UserService
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function delete(User $user): bool
+    {
+        try {
+            $user->delete();
+            return true;
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }
