@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,6 @@ class UsersController extends Controller
     {
         $users = User::all();
         return response()->json([
-            'message' => 'Loaded all successfully',
             'user' => new UserCollection($users->load('roles')),
         ], 201);
     }
@@ -34,7 +34,9 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return response()->json([
+            'user' => new UserResource($user->load('roles')),
+        ], 201);
     }
 
     /**
