@@ -65,7 +65,7 @@ class UsersController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(User $user)
-    {
-        //
+    {   return ( $this->userService->delete($user) == 1) ? response()->json(["message" => "User deleted successfully"], 201) : response()->json(["message" => "User not found"], 201);
     }
+
 }
