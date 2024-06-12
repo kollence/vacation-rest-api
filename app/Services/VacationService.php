@@ -55,6 +55,7 @@ class VacationService
 
     private function checkIfDatesOverlap($teamId, $startDate, $endDate, $excludeRequestId = null)
     {
+        $user = auth()->user();
         $query = VacationRequest::where('team_id', $teamId)
             ->where('status', 'approved')
             ->where(function ($query) use ($startDate, $endDate) {
@@ -73,7 +74,7 @@ class VacationService
         if ($query->exists()) {
             throw ValidationException::withMessages(['date' => 'The selected dates overlap with an existing vacation request.']);
         }
-        // Check for exact same start and end date
+        // Check for exact same start and end date (for creators of the request)
         if (VacationRequest::where('team_id', $teamId)
             ->where('start_date', $startDate)
             ->where('end_date', $endDate)
