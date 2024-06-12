@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
     Route::apiResource('teams', TeamsController::class);
 
     Route::apiResource('users', UsersController::class);
+    Route::get('/vacation-requests/show-history', [VacationsController::class, 'showHistory']); 
     Route::patch('/vacation-requests/{id}/approve', [VacationsController::class, 'approve']);
     Route::apiResource('vacation-requests', VacationsController::class);
     // Auth logout
