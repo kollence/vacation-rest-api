@@ -29,14 +29,24 @@ class DatabaseSeeder extends Seeder
             $user->roles()->attach($roleId);
             $user->createToken('user-token')->plainTextToken;
         }
+        foreach(range(1, 3) as $manager) {
+            $manager = User::factory()->create([
+                'name' => 'Manager'.$manager,
+                'email' => 'Manager'.$manager.'@mail.com',
+            ]);
+            $roleId = Role::where('name', $roles[1])->first()->id;
+            $manager->roles()->attach($roleId);
+            $manager->createToken('manager-token')->plainTextToken;
+        }
 
-        $manager = User::factory()->create([
-            'name' => 'Manager',
-            'email' => 'manager@mail.com',
-        ]);
-        $roleId = Role::where('name', $roles[1])->first()->id;
-        $manager->roles()->attach($roleId);
-        $manager->createToken('manager-token')->plainTextToken;
+
+        // $manager = User::factory()->create([
+        //     'name' => 'Manager',
+        //     'email' => 'manager@mail.com',
+        // ]);
+        // $roleId = Role::where('name', $roles[1])->first()->id;
+        // $manager->roles()->attach($roleId);
+        // $manager->createToken('manager-token')->plainTextToken;
 
         $admin = User::factory()->create([
             'name' => 'Admin',
