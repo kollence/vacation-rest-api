@@ -43,7 +43,7 @@ class TeamsController extends Controller
      */
     public function store(CreateTeamRequest $request)
     {
-        Gate::authorize('create', CreateTeamRequest::class);
+        Gate::authorize('create', Team::class);
         $team = $this->teamService->createTeam($request->validated());
 
         return response()->json([
@@ -57,7 +57,7 @@ class TeamsController extends Controller
      */
     public function show(Team $team)
     {
-        Gate::authorize('show', $team);
+        Gate::authorize('view', $team);
         
         return response()->json([
             'team' => new TeamResource($team->load(['managers', 'regularUsers'])),
