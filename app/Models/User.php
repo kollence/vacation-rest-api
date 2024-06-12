@@ -48,22 +48,17 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class);
     }
 
     public function team()
     {
-        return $this->belongsTo(Team::class, 'team_id');
+        return $this->belongsToMany(Team::class, 'team_user');
     }
 
-    public function vacationRequest()
+    public function vacationRequests()
     {
         return $this->hasMany(VacationRequest::class);
-    }
-
-    public function managedRequest()
-    {
-        return $this->hasMany(VacationRequest::class, 'approver_by');
     }
 
     public function isAdmin()
