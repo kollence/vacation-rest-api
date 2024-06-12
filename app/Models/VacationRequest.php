@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,13 +15,15 @@ class VacationRequest extends Model
      *
      * @var array<int, string>
      */
+
     protected $fillable = [
         'user_id',
+        'team_id',
         'start_date',
         'end_date',
-        'status',
         'reason',
-        'approved_by'
+        'status',
+        'approved_by',
     ];
 
     public function user()
@@ -28,7 +31,12 @@ class VacationRequest extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function approvedBy()
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
