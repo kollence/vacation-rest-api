@@ -3,51 +3,57 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateVacationRequest;
+use App\Http\Requests\UpdateVacationRequest;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\VacationRequest;
+use App\Services\VacationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class VacationsController extends Controller
 {
+
+    public function __construct(
+        private VacationService $vacationService
+        )
+    {
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+
+        $vacationRequests = VacationRequest::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['vacation_requests' => $vacationRequests]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateVacationRequest $request)
+    {
+        $vacationRequest = $this->vacationService->createVacationRequest($request->validated());
+
+        return response()->json(['message' => 'Vacation request created successfully', 'vacation_request' => $vacationRequest], 201);
+    }
+
+    public function approve(Request $request, $id)
     {
         $validated = $request->validate([
-            'start_date' => 'required|date|after:today',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'nullable|string|max:255',
+            'status' => 'required|in:approved,rejected',
         ]);
 
-        $user = Auth::user();
-        if (!$user->team->first()) {
-            throw ValidationException::withMessages(['team' => 'You are not part of any team.']);
-        }
+        $vacationRequest = $this->vacationService->approveVacationRequest($id, $validated['status']);
 
-        $team = Auth::user()->team->first();
-
-        $vacationRequest = VacationRequest::create([
-            'user_id' => $user->id,
-            'team_id' => $team->id,
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
-            'reason' => $validated['reason'] ?? null,
-            'status' => 'pending',
-        ]);
-
-        return response()->json(['message' => 'Vacation request created successfully.', 'data' => $vacationRequest], 201);
+        return response()->json(['message' => 'Vacation request status updated successfully.', 'data' => $vacationRequest], 200);
     }
 
     /**
@@ -61,9 +67,11 @@ class VacationsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, VacationRequest $vacationRequest)
+    public function update(UpdateVacationRequest $request, VacationRequest $vacationRequest)
     {
-        //
+        $vacationRequest = $this->vacationService->updateVacationRequest($vacationRequest, $request->validated());
+
+        return response()->json(['message' => 'Vacation request updated successfully', 'vacationRequest' => $vacationRequest], 200);
     }
 
     /**
@@ -71,6 +79,8 @@ class VacationsController extends Controller
      */
     public function destroy(VacationRequest $vacationRequest)
     {
-        //
+        $vacationRequest->delete();
+
+        return response()->json(['message' => 'Vacation request deleted successfully'], 200);
     }
 }
