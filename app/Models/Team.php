@@ -9,15 +9,25 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'manager_id'];
-
-    public function manager()
-    {
-        return $this->belongsTo(User::class, 'manager_id');
-    }
+    protected $fillable = ['name'];
 
     public function users()
     {
-        return $this->hasMany(User::class, 'team_id');
+        return $this->belongsToMany(User::class, 'team_user')->withPivot('role');
+    }
+
+    public function managers()
+    {
+        return $this->users()->wherePivot('role', 'manager');
+    }
+
+    public function regularUsers()
+    {
+        return $this->users()->wherePivot('role', 'user');
+    }
+
+    public function vacationRequests()
+    {
+        return $this->hasMany(VacationRequest::class);
     }
 }
