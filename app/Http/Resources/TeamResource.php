@@ -17,12 +17,8 @@ class TeamResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            'manager' => [ // Include manager data
-                'manager_id' => $this->manager->id,
-                'name' => $this->manager->name,
-                'email' => $this->manager->email,
-            ],
-            "users" => TeamUserResource::collection($this->whenLoaded('users'))
+            'managers' => UserResource::collection($this->whenLoaded('managers')->load('roles')),
+            'users' => UserResource::collection($this->whenLoaded('regularUsers')->load('roles')),
         ];
     }
 }
