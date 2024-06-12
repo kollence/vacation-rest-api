@@ -75,7 +75,7 @@ class VacationService
             throw ValidationException::withMessages(['date' => 'The selected dates overlap with an existing vacation request.']);
         }
         // Check for exact same start and end date (for creators of the request)
-        if (VacationRequest::where('team_id', $teamId)
+        if (VacationRequest::where('user_id', $user->id)
             ->where('start_date', $startDate)
             ->where('end_date', $endDate)
             ->exists()
