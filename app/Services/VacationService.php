@@ -117,6 +117,8 @@ class VacationService
                 return $data; // rejected
             }
             
+        }else{
+            throw ValidationException::withMessages(['message' => 'You are not manager of this team.']);
         }
 
     }
