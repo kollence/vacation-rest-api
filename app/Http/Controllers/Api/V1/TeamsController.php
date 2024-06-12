@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\TeamService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -28,6 +29,8 @@ class TeamsController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Team::class);
+
         $teams = Team::with(['managers', 'regularUsers'])->get();
 
         return response()->json([
@@ -40,7 +43,7 @@ class TeamsController extends Controller
      */
     public function store(CreateTeamRequest $request)
     {
-
+        Gate::authorize('create', CreateTeamRequest::class);
         $team = $this->teamService->createTeam($request->validated());
 
         return response()->json([
@@ -54,8 +57,18 @@ class TeamsController extends Controller
      */
     public function show(Team $team)
     {
+        Gate::authorize('show', $team);
+        
         return response()->json([
             'team' => new TeamResource($team->load(['managers', 'regularUsers'])),
+        ], 200);
+    }
+    public function showMyTeam()
+    {
+        $teams = auth()->user()->team;
+        
+        return response()->json([
+            'teams' => $teams->load(['managers', 'regularUsers']),
         ], 200);
     }
 
@@ -64,7 +77,7 @@ class TeamsController extends Controller
      */
     public function update(UpdateTeamRequest $request, Team $team)
     {
-        // dd( $request->all());
+        Gate::authorize('update', $team);
         $team = $this->teamService->updateTeam($team, $request->all());
 
 
@@ -78,6 +91,7 @@ class TeamsController extends Controller
      */
     public function destroy(Team $team)
     {
+        Gate::authorize('delete', $team);
         DB::transaction(function () use ($team) {
             $team->delete();
         });
