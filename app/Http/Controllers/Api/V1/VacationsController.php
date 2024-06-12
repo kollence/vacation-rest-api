@@ -35,6 +35,17 @@ class VacationsController extends Controller
         return response()->json(['vacation_requests' => $vacationRequests]);
     }
 
+    public function showHistory()
+    {
+        $authUser = auth()->user();
+
+        $vacationRequests = VacationRequest::where('user_id', $authUser->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['vacation_requests' => $vacationRequests]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -53,7 +64,7 @@ class VacationsController extends Controller
 
         $vacationRequest = $this->vacationService->approveVacationRequest($id, $validated['status']);
 
-        return response()->json(['message' => 'Vacation request status updated successfully.', 'data' => $vacationRequest], 200);
+        return response()->json(['message' => 'Vacation request status updated successfully.', 'status' => $vacationRequest], 200);
     }
 
     /**
@@ -61,7 +72,9 @@ class VacationsController extends Controller
      */
     public function show(VacationRequest $vacationRequest)
     {
-        //
+        return response()->json([
+            'vacation_request' => $vacationRequest,
+        ], 201);
     }
 
     /**
@@ -71,7 +84,7 @@ class VacationsController extends Controller
     {
         $vacationRequest = $this->vacationService->updateVacationRequest($vacationRequest, $request->validated());
 
-        return response()->json(['message' => 'Vacation request updated successfully', 'vacationRequest' => $vacationRequest], 200);
+        return response()->json(['message' => 'Vacation request updated successfully', 'vacation_request' => $vacationRequest], 200);
     }
 
     /**
