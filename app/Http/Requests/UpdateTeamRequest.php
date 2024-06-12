@@ -27,17 +27,19 @@ class UpdateTeamRequest extends FormRequest
             return
             [
                 'name' => 'required|string|max:255',
-                'manager_id' => 'required|exists:users,id',
-                'user_ids' => 'array|distinct', // Ensure at least one unique user ID
-                'user_ids.*' => 'exists:users,id', // Validate each user ID exists
+                'managers' => 'required|array|min:1',
+                'managers.*' => 'exists:users,id',
+                'regular_users' => 'array|distinct', // Ensure at least one unique user ID
+                'regular_users.*' => 'exists:users,id', // Validate each user ID exists
             ];
         }else {
             return 
             [
                 'name' => 'sometimes|required|string|max:255',
-                'manager_id' => 'sometimes|required|exists:users,id',
-                'user_ids' => 'sometimes|array|distinct', // Ensure at least one unique user ID
-                'user_ids.*' => 'sometimes|exists:users,id', // Validate each user ID exists
+                'managers' => 'sometimes|required|array|min:1',
+                'managers.*' => 'sometimes|exists:users,id',
+                'regular_users' => 'sometimes|array|distinct', // Ensure at least one unique user ID
+                'regular_users.*' => 'sometimes|exists:users,id', // Validate each user ID exists
             ];
         }
     }
