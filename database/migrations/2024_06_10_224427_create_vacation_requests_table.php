@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('vacation_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('status',['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
             $table->text('reason')->nullable();
-            $table->foreignId('approved_by')->nullable()->constrained()->onDelete('set null');
             $table->timestamps();
+
+
         });
     }
 
