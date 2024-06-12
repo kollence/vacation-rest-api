@@ -26,9 +26,9 @@ class VacationsController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
+        $authUserTeam = auth()->user()->team->first();
 
-        $vacationRequests = VacationRequest::where('user_id', $user->id)
+        $vacationRequests = VacationRequest::where('team_id', $authUserTeam->id)
             ->orderBy('created_at', 'desc')
             ->get();
 
