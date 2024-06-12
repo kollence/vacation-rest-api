@@ -83,4 +83,41 @@ class VacationService
             throw ValidationException::withMessages(['date' => 'A vacation request with the same start and end date already exists.']);
         }
     }
+
+    public function approveVacationRequest($id, $data)
+    {
+        $vacationRequest = VacationRequest::findOrFail($id);
+        $user = $vacationRequest->user;
+        $manager = Auth::user();
+
+        // Ensure the approver is a manager in the same team
+        if($manager->isManager() && $manager->team->contains($user->team->first())){
+            $vacationDays = $vacationRequest->getVacationDays();
+
+            if($data == 'approved'){
+                                // Check if the user has enough vacation days left
+                if ($user->vacation_days >= $vacationDays) {
+                    // Subtract the vacation days from the user's balance
+                    $user->vacation_days -= $vacationDays;
+                    $user->save();
+                    
+                    $vacationRequest->update([
+                        'status' => $data,
+                        'approved_by' => $manager->id,
+                    ]);
+                    return $data; //approved
+                } else {
+                    throw ValidationException::withMessages(['date' => 'User does not have enough vacation days.']);
+                }
+            }else{
+                $vacationRequest->update([
+                    'status' => $data,
+                    'approved_by' => $manager->id,
+                ]);
+                return $data; // rejected
+            }
+            
+        }
+
+    }
 }
