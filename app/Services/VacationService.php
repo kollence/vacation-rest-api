@@ -34,6 +34,25 @@ class VacationService
         return $vacationRequest;
     }
 
+    public function updateVacationRequest($vacationRequest, $data)
+    {
+        $user = Auth::user();
+        $team = $user->team->first();
+        if (!$team) {
+            throw ValidationException::withMessages(['user' => 'User must belong to a team to request a vacation.']);
+        }
+
+        $this->checkIfDatesOverlap($team->id, $data['start_date'], $data['end_date'], $vacationRequest->id);
+
+        $vacationRequest->update([
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'reason' => $data['reason'] ?? null,
+        ]);
+
+        return $vacationRequest;
+    }
+
     private function checkIfDatesOverlap($teamId, $startDate, $endDate, $excludeRequestId = null)
     {
         $query = VacationRequest::where('team_id', $teamId)
