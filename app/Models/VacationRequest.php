@@ -41,6 +41,14 @@ class VacationRequest extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function getVacationDays()
+    {
+        $startDate = Carbon::parse($this->start_date);
+        $endDate = Carbon::parse($this->end_date);
+
+        return $startDate->diffInDays($endDate) + 1; // Including start and end date
+    }
+    
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved');
