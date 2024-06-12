@@ -63,14 +63,6 @@ class TeamsController extends Controller
             'team' => new TeamResource($team->load(['managers', 'regularUsers'])),
         ], 200);
     }
-    public function showMyTeam()
-    {
-        $teams = auth()->user()->team;
-        
-        return response()->json([
-            'teams' => $teams->load(['managers', 'regularUsers']),
-        ], 200);
-    }
 
     /**
      * Update the specified resource in storage.

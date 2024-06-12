@@ -18,7 +18,6 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
     });
     // Teams
     Route::post('/teams/remove-team-user/{team}', [TeamsController::class, 'removeTeamUser']);
-    Route::get('teams/show-my-team', [TeamsController::class, 'showMyTeam']);
     Route::apiResource('teams', TeamsController::class);
 
     Route::apiResource('users', UsersController::class);
