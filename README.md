@@ -9,27 +9,27 @@
     Request JSON
         {
             "name": "Tim Racunovodja",
-            "manager_id": 1,
-            "user_ids": [2,3]
+            "managers": [1],
+            "regular_users": [2,3]
         }
 4. Abdejtuje tim PUT/PATCH /api/v1/teams/{team} Oba scenarija su pokrivena
    Za PATCH 
         {
             "name": "Novi tim PATCH"
-            "user_ids": []
+            "regular_users": []
         }
    Za PUT
         {
             "name": "Novi tim PUT",
-            "manager_id": 2,
-            "user_ids": [3,4]
+            "managers": [1],
+            "regular_users": [3,4]
         }
 5. Brise tim DELETE /api/v1/teams/{team}
 
 
 6. Brise korisnika(e) iz tima POST /api/v1/teams/remove-team-user/{team}
     {
-        "user_ids": [1,2,4]
+        "regular_users": [1,2,4]
     }
 
 ### Korisnici
