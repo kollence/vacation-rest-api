@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\TeamsController;
 use App\Http\Controllers\Api\V1\UsersController;
+use App\Http\Controllers\Api\V1\VacationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
     Route::apiResource('teams', TeamsController::class);
 
     Route::apiResource('users', UsersController::class);
+    Route::patch('/vacation-requests/{id}/approve', [VacationsController::class, 'approve']);
+    Route::apiResource('vacation-requests', VacationsController::class);
     // Auth logout
     Route::post('/logout', [AuthController::class, 'logout']);
 });
