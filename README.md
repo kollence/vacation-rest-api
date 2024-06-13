@@ -1,4 +1,4 @@
-Na samo inicijalno logovanje korisnima se automatski dodeljuje rola user
+Na samo inicijalno logovanje korisnicima se automatski dodeljuje rola user
 Pokretanjem db:seed se kreiraju 5 korinika 3 menadzera 1 administrator. Sve stoji u DatabaseSeeder
 - Administrator: Admin moze da kreira, menja, briše korisnike i dodeljuje uloge korisnika aplikacije. Kreira timove i dodeljuje korisnike timovima. Obeležava menadžera tima.
 - Menadzer: Odgovara na zahteve korisnika za odmor unutar tima. Datumi odmora unutar tima ne smeju da se poklapaju. Ima pregled samo svog tima.
