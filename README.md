@@ -6,7 +6,6 @@
 2. Prikazuje tim GET /api/v1/teams/{team}
 
 3. Kreira tim POST /api/v1/teams Obavezno ime tima i makar jedan menadzer tima. Neobavezno dodavanje korisnika (naknadno se mogu dodavati, menjati, brisati)
-- Request JSON
 -    POST
     -   {
     -       "name": "Tim Racunovodja",
@@ -39,7 +38,6 @@
 2. Prikaz korisnika GET /api/v1/users/{user}
 
 3. Kreira korisnika POST /api/v1/users Obavezno ime, mail, password, password confirmation (role se naknadno mogu dodavati, menjati, brisati, DEFAULT je user)
--    Request JSON
 -    POST
     -    {
     -        "name": "Bora",
@@ -74,7 +72,6 @@
 
 4. Kreira VR POST /api/v1/vacation-request/show-history start_date & end_date obavezni
      (datumi se ne mogu kreirati u proslosti i ne mogu se preklapati sa approved, start_date ne moze biti veci od end_date)
--    Request JSON
 -    POST
     -    {
     -        "start_date": "2024-08-01",
