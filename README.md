@@ -5,32 +5,32 @@
 
 2. Prikazuje tim GET /api/v1/teams/{team}
 
-3. Kreira tim POST /api/v1/teams Obavezno ime tima i menadzer tima. Neobavezno dodavanje korisnika (naknadno se mogu dodavati, menjati, brisati)
-    Request JSON
-        {
-            "name": "Tim Racunovodja",
-            "managers": [1],
-            "regular_users": [2,3]
-        }
+3. Kreira tim POST /api/v1/teams Obavezno ime tima i makar jedan menadzer tima. Neobavezno dodavanje korisnika (naknadno se mogu dodavati, menjati, brisati)
+- Request JSON
+    -   {
+    -       "name": "Tim Racunovodja",
+    -       "managers": [1],
+    -       "regular_users": [2,3]
+    -   }
 4. Abdejtuje tim PUT/PATCH /api/v1/teams/{team} Oba scenarija su pokrivena
-   Za PATCH 
-        {
-            "name": "Novi tim PATCH"
-            "regular_users": []
-        }
-   Za PUT
-        {
-            "name": "Novi tim PUT",
-            "managers": [1],
-            "regular_users": [3,4]
-        }
+-  Za PATCH 
+    -   {
+    -       "name": "Novi tim PATCH"
+    -       "regular_users": []
+    -   }
+-  Za PUT
+    -   {
+    -       "name": "Novi tim PUT",
+    -       "managers": [1],
+    -       "regular_users": [3,4]
+    -   }
 5. Brise tim DELETE /api/v1/teams/{team}
 
 
 6. Brise korisnika(e) iz tima POST /api/v1/teams/remove-team-user/{team}
-    {
-        "regular_users": [1,2,4]
-    }
+    -   {
+    -     "regular_users": [1,2,4]
+    -   }
 
 ### Korisnici
 1. Lista korisnika GET /api/v1/users Lista svih korisnika sa prikacenim ovlascenjima
@@ -62,10 +62,4 @@
 5. Brise korisnika DELETE /api/v1/users/{user} automatski se brise i role_user red gde je korisnik pripadao
 
 
-
-
-
-
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
 
