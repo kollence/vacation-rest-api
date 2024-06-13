@@ -16,7 +16,7 @@ Pokretanjem db:seed se kreiraju 5 korinika 3 menadzera 1 administrator. Sve stoj
   -       "managers": [1],
   -       "regular_users": [2,3]
   -   }
-4. Abdejtuje tim PUT/PATCH /api/v1/teams/{team} Oba scenarija su pokrivena
+4. Abdejtuje tim PUT/PATCH /api/v1/teams/{team} Oba scenarija su pokrivena. Tim mora imati makar jednog Menadzera tima. Inace tim skroz treba obrisati.
  -  PATCH 
   -   {
   -       "name": "Novi tim PATCH"
