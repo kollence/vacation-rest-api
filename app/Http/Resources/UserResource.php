@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'vacation_days' => $this->vacation_days,
+            'vacation_requests' => VacationRequestResource::collection( $this->whenLoaded('vacationRequests')),
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
         ];
     }

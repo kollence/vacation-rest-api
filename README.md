@@ -1,4 +1,8 @@
-## Administrator
+Na samo inicijalno logovanje korisnima se automatski dodeljuje rola user
+Pokretanjem db:seed se kreiraju 5 korinika 3 menadzera 1 administrator. Sve stoji u DatabaseSeeder
+- Administrator: Admin moze da kreira, menja, briše korisnike i dodeljuje uloge korisnika aplikacije. Kreira timove i dodeljuje korisnike timovima. Obeležava menadžera tima.
+- Menadzer: Odgovara na zahteve korisnika za odmor unutar tima. Datumi odmora unutar tima ne smeju da se poklapaju. Ima pregled samo svog tima.
+- Korisnik: Šalje zatev za odmor i može da vidi unutar tima sve koji su kreirali zahtev i čekaju da se odobri kao i sve zateve koji su sa statusom "odobren" ili "na čekanju". Vidi istoriju svojih zahteva i koliko mu je dana odmora i slobodnih dana preostalo.
 
 ### Timovi
 1. Lista timove GET /api/v1/teams Lista svih korisnika
@@ -64,7 +68,7 @@
 
 
 
-### Vacation_request
+### Zahtevi za odmor ( Vacation Request )
 1. Lista VR GET /api/v1/vacation-request Lista svih VR
 
 2. Prikaz VR GET /api/v1/vacation-request/{vacationRequest}
