@@ -21,6 +21,7 @@ class VacationRequestResource extends JsonResource
             'reason' => $this->reason,
             'status' => $this->status,
             'approved_by' => $this->approved_by,
+            "user" => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

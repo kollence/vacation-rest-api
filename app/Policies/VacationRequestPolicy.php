@@ -59,4 +59,11 @@ class VacationRequestPolicy
         // Only the user who created the vacation request can view their own history
         return $user->id === $vacationRequest->user_id;
     }
+
+    public function viewAny(User $user)
+    {
+        // Only allow admins to view any vacation requests
+        return $user->isAdmin();
+    }
+
 }

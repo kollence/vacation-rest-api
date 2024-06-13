@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateVacationRequest;
 use App\Http\Requests\UpdateVacationRequest;
+use App\Http\Resources\UserVacationRequestResource;
+use App\Http\Resources\VacationRequestCollection;
+use App\Http\Resources\VacationRequestResource;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\VacationRequest;
@@ -27,29 +30,25 @@ class VacationsController extends Controller
      */
     public function index()
     {
-        $authUserTeam = auth()->user()->team->first();
+        Gate::authorize('viewAny', VacationRequest::class);
 
-        $vacationRequests = VacationRequest::where('team_id', $authUserTeam->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json(['vacation_requests' => $vacationRequests]);
+        $vacationRequests = VacationRequest::with('user')->get();
+        
+        return response()->json(['vacation_requests_with_users' => new VacationRequestCollection($vacationRequests)]);
     }
 
     public function showHistory()
     {
-        $authUser = auth()->user();
+        $user = auth()->user();
 
-        $vacationRequests = VacationRequest::where('user_id', $authUser->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $vacationRequests = $user->load('vacationRequests');
             
         // Check if the user has the permission to view history
-        foreach ($vacationRequests as $vacationRequest) {
+        foreach ($vacationRequests['vacationRequests'] as $vacationRequest) {
             Gate::authorize('viewHistory', $vacationRequest);
         }
 
-        return response()->json(['vacation_requests' => $vacationRequests]);
+        return response()->json(['user_history' => new UserVacationRequestResource($vacationRequests)]);
     }
 
     /**
@@ -61,7 +60,7 @@ class VacationsController extends Controller
 
         $vacationRequest = $this->vacationService->createVacationRequest($request->validated());
 
-        return response()->json(['message' => 'Vacation request created successfully', 'vacation_request' => $vacationRequest], 201);
+        return response()->json(['message' => 'Vacation request created successfully', 'vacation_request' => new VacationRequestResource($vacationRequest)], 201);
     }
 
     public function approve(Request $request, VacationRequest $vacationRequest)
@@ -72,9 +71,9 @@ class VacationsController extends Controller
             'status' => 'required|in:approved,rejected',
         ]);
 
-        $vacationRequest = $this->vacationService->approveVacationRequest($vacationRequest->id, $validated['status']);
+        $result = $this->vacationService->approveVacationRequest($vacationRequest->id, $validated['status']);
 
-        return response()->json(['message' => 'Vacation request status updated successfully.', 'status' => $vacationRequest], 200);
+        return response()->json(['message' => 'Vacation request status updated successfully.', 'status' => $result], 200);
     }
 
     /**
@@ -85,7 +84,7 @@ class VacationsController extends Controller
         Gate::authorize('view', $vacationRequest);
 
         return response()->json([
-            'vacation_request' => $vacationRequest,
+            'vacation_request' => new VacationRequestResource($vacationRequest->load('user')),
         ], 201);
     }
 
@@ -98,7 +97,7 @@ class VacationsController extends Controller
 
         $vacationRequest = $this->vacationService->updateVacationRequest($vacationRequest, $request->validated());
 
-        return response()->json(['message' => 'Vacation request updated successfully', 'vacation_request' => $vacationRequest], 200);
+        return response()->json(['message' => 'Vacation request updated successfully', 'vacation_request' => new VacationRequestResource($vacationRequest)], 200);
     }
 
     /**
