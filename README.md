@@ -92,7 +92,7 @@
   -    }
 6. Brise VR DELETE /api/v1/vacation-request/{vacationRequest}
 
-7. Approve VR PATCH /api/v1/vacation-requests/9/approve Moze samo da urade Mendadzeri tima
+7. Approve VR PATCH /api/v1/vacation-requests/9/approve Moze samo da urade Mendadzeri tima i tek kada odobri tada se vacation_days smanjuje u users tabeli
  -  PATCH 
   -    {
   -        "status": "approved" // or rejected 
