@@ -14,12 +14,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Generate 3 type of user
         $roles = ['user', 'manager', 'admin'];
 
+        // Create roles
         foreach ($roles as $role) {
             Role::create(['name' => $role]);
         }
+        // Create users
         foreach(range(1, 5) as $user) {
             $user = User::factory()->create([
                 'name' => 'User'.$user,
@@ -29,16 +31,18 @@ class DatabaseSeeder extends Seeder
             $user->roles()->attach($roleId);
             $user->createToken('user-token')->plainTextToken;
         }
+        // Create managers
         foreach(range(1, 3) as $manager) {
             $manager = User::factory()->create([
                 'name' => 'Manager'.$manager,
-                'email' => 'Manager'.$manager.'@mail.com',
+                'email' => 'manager'.$manager.'@mail.com',
             ]);
             $roleId = Role::where('name', $roles[1])->first()->id;
             $manager->roles()->attach($roleId);
             $manager->createToken('manager-token')->plainTextToken;
         }
 
+        // Create admin
         $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@mail.com',

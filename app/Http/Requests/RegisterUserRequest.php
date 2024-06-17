@@ -27,4 +27,26 @@ class RegisterUserRequest extends FormRequest
             'password' => ['required', 'confirmed', 'min:6'],
         ];
     }
+
+    /**
+     * Get custom validation messages for attributes.
+     *
+     * @return array<string, mixed>
+     */
+    public function messages()
+    {
+        return [
+            'name.required' => 'Please enter your name.',
+            'name.string' => 'Your name must be text.',
+            'name.max' => 'Your name cannot be more than 255 characters.',
+            'email.required' => 'Please enter your email address.',
+            'email.string' => 'Your email address must be a valid email format.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.max' => 'Your email address cannot be more than 255 characters.',
+            'email.unique' => 'The email address you entered is already registered.',
+            'password.required' => 'Please enter a password.',
+            'password.confirmed' => 'The password confirmation does not match the password.',
+            'password.min' => 'Your password must be at least 6 characters long.',
+        ];
+    }
 }

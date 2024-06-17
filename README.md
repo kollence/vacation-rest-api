@@ -20,9 +20,9 @@ Pokretanjem db:seed se kreiraju 5 korinika 3 menadzera 1 administrator. Sve stoj
 5. Brise tim DELETE /api/v1/teams/{team}
 
 
-6. Brise korisnika(e) iz tima POST /api/v1/teams/remove-team-user/{team}
- -  POST
-  -   { "regular_users": [1,2,4] }
+6. Brise korisnika(e) iz tima PATCH /api/v1/teams/remove-team-user/{team} Uklanja korisnike i menedzere tima. Mora ostati makar jedan menadzer
+ -  PATCH
+  -   { "managers": [6], "regular_users": [2] }
 
 ### Korisnici
 1. Lista korisnika GET /api/v1/users Lista svih korisnika sa prikacenim ovlascenjima

@@ -18,12 +18,9 @@ use Illuminate\Validation\ValidationException;
 
 class TeamsController extends Controller
 {
-    private $teamService;
 
-    public function __construct(TeamService $teamService)
-    {
-        $this->teamService = $teamService;
-    }
+    public function __construct(private TeamService $teamService)
+    {}
     /**
      * Display a listing of the resource.
      */
@@ -42,8 +39,9 @@ class TeamsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(CreateTeamRequest $request)
-    {
+    {   // Just admin can store
         Gate::authorize('create', Team::class);
+
         $team = $this->teamService->createTeam($request->validated());
 
         return response()->json([
@@ -70,8 +68,8 @@ class TeamsController extends Controller
     public function update(UpdateTeamRequest $request, Team $team)
     {
         Gate::authorize('update', $team);
-        $team = $this->teamService->updateTeam($team, $request->all());
 
+        $team = $this->teamService->updateTeam($team, $request->all());
 
         return response()->json([
             'team' => new TeamResource($team->load(['managers', 'regularUsers'])),
@@ -84,10 +82,9 @@ class TeamsController extends Controller
     public function destroy(Team $team)
     {
         Gate::authorize('delete', $team);
-        DB::transaction(function () use ($team) {
-            $team->delete();
-        });
-
+        
+        $team->delete();
+        
         return response()->json([
             'message' => 'Team deleted successfully',
         ], 200);
@@ -95,18 +92,18 @@ class TeamsController extends Controller
 
     public function removeTeamUser(Request $request, Team $team)
     {
-
         $validatedData = $request->validate([
             'managers' => 'sometimes|array|min:1',
             'managers.*' => 'exists:users,id',
             'regular_users' => 'sometimes|array|min:1',
             'regular_users.*' => 'exists:users,id',
         ]);
+        
         $team = $this->teamService->removeTeamUser($team, $validatedData);
 
-            return response()->json([
-                'team' => new TeamResource($team->load(['managers', 'regularUsers'])),
-            ], 200);
+        return response()->json([
+            'team' => new TeamResource($team->load(['managers', 'regularUsers'])),
+        ], 200);
 
     }
 }

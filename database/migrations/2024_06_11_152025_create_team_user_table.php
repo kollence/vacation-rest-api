@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('role', ['manager', 'user']); // Restrict role to 'manager' or 'user'
-            $table->unique(['team_id', 'user_id']); // Ensures unique team-user pairs
-            $table->unique(['user_id']); // Ensures a user can only belong to one team
+            // $table->unique(['team_id', 'user_id']); // Ensures unique team-user pairs
+            // $table->unique(['user_id']); // Ensures a user can only belong to one team
             $table->timestamps();
         });
     }

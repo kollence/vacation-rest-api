@@ -17,10 +17,11 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1','mi
         return $request->user();
     });
     // Teams
-    Route::post('/teams/remove-team-user/{team}', [TeamsController::class, 'removeTeamUser']);
+    Route::patch('/teams/remove-team-user/{team}', [TeamsController::class, 'removeTeamUser']);
     Route::apiResource('teams', TeamsController::class);
-
+    // Users
     Route::apiResource('users', UsersController::class);
+    // Vacation requests
     Route::get('/vacation-requests/show-history', [VacationsController::class, 'showHistory']); 
     Route::patch('/vacation-requests/{vacationRequest}/approve', [VacationsController::class, 'approve']);
     Route::apiResource('vacation-requests', VacationsController::class);
